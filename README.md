@@ -25,9 +25,17 @@ Using GraffiTE for inspiration/model, this pipeline extends usage for >5 samples
 
 ### 2. Sample alignment
 
-### 3. 
+### 3. QC - Quality reads (Optional)
 
-### 4. 
+### 4. Mask TEs
 
-### 5. 
+### 5. Filtration
+
+### 6. Genotyping
+
+### 7. Analysis
+
+#### 7a.
+
+#### 7b. 
 

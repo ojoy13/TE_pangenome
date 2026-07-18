@@ -1,0 +1,23 @@
+SampleID	Sex	Super-Population	Sub-Population	N50	Number of bases	Estimated X Coverage
+HG01890	M	African	African-Caribbean	124821	197360048892	62
+HG02282	F	African	African-Caribbean	96856	207990880917	65
+NA19705	M	African	African-American SW	170509	145139231585	45
+NA19836	F	African	African-American SW	100990	204234383198	64
+NA20355	F	African	African-American SW	148516	157085287217	49
+HG03520	F	African	Esan                    	106383	176594137064	55
+HG02769	F	African	Gambian                 	121860	157882305691	49
+HG02818	F	African	Gambian                 	158280	144889928906	45
+NA19434	F	African	Luhya                   	127614	151589687601	47
+NA21487	F	African	Maasai population in Kinyawa, Kenya	124294	206835993745	65
+HG03452	F	African	Mende                   	171720	155704950617	49
+HG03456	M	African	Mende                   	146733	173313129151	54
+NA19129	F	African	Yoruba	163417	186300707089	58
+HG01352	F	American	Colombian               	121241	172543829698	54
+HG02106	F	American	Peruvian                	147395	184997531622	58
+HG02059	F	East Asian	Kinh Vietnamese	174185	154381955787	48
+HG00268	F	European	Finland	159433	167855151189	52
+HG00358	M	European	Finland	115997	170605291887	53
+HG03807	F	South Asian	Bengali                 	169498	146668779993	46
+HG04217	F	South Asian	Indian                  	162361	154979681717	48
+HG04036	F	South Asian	Sri Lankan   	126797	216901288191	68
+

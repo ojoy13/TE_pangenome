@@ -19,8 +19,9 @@
 
 module load bedtools
 
-echo $(date +"[%b %d %H:%M:%S]") "Done!"
+echo $(date +"[%b %d %H:%M:%S]") "Starting..."
 
-bedtools window -w 10000 -a /scratch/Users/olde5615/data/pangenome21_phased/21_graphs_31MAY26/phased_vcf/pangenome_21_phased_nosymbolic.vcf.gz -b gtf_transcripts_bed_output.bed > gtf_transcripts_bedwin_10kb.bed
+# Run bedtools window
+bedtools window -w 10000 -a /scratch/Users/olde5615/data/pangenome21_phased/21_graphs_31MAY26/phased_vcf/pangenome_21_phased_nosymbolic.vcf.gz -b gtf_geneID_bed_output.bed > /scratch/Users/olde5615/data/graph21_RNA/featureCounts_transcripts_gene_id/gtf_genes_bedwin_10kb.bed
 
 echo $(date +"[%b %d %H:%M:%S]") "Done!"

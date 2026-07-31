@@ -33,4 +33,4 @@ Using a pangenome allows us to identify uncommon transposable elements (TEs) tha
 -
 -
 ## Workflow
-See /TE_panenome/workflow for full diagrams of each step!
+See /TE_pangenome/workflow/ for full diagrams of each step!

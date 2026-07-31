@@ -1,9 +1,9 @@
 #!/bin/bash
 
 ## Script for running NanoPlot on all .bam
-##
+## Note: NanoStat requires python 3
 ## Example usage:
-## inDir=. outDir=. sbatch nanoPlot_summaryBAMs.sbatch
+## sbatch nanoPlot_summaryBAMs.sbatch
 
 ## General settings
 #SBATCH -p short
@@ -14,16 +14,14 @@
 
 # Job name and output
 #SBATCH -J nanoPlot_BAM
-#SBATCH -o /scratch/Users/%u/data/slurmOut/slurm-%A_%a.out
-#SBATCH -e /scratch/Users/%u/data/slurmErr/slurm-%A_%a.err
+#SBATCH -o /Users/%u/data/slurmOut/slurm-%j.out
+#SBATCH -e /Users/%u/data/slurmErr/slurm-%j.err
 
-# Activate virtual environment that contains NanoPlot
-source ~/jhub_venv_3.10.8/bin/activate
+# Set Variables
+inDir="/TE_pangenome/GraffiTE/outputs/NanoStat_bams" 
+outDir="/TE_pangenome/GraffiTE/outputs/NanoPlot_bams" 
 
-# Set query files
-queries=($(ls $inDir/*.bam | xargs -n 1 basename))
-
-# Make output dir, if it doesn't exist
+# Make outDir, if it doesn't exist
 mkdir -p $outDir
 
 # Run NanoPlot
@@ -37,6 +35,6 @@ NanoPlot -t 12 \
 --color green \
 --bam $inDir/*.bam \
 --downsample 10000 \
--o $outDir/bamplots_downsampled
+-o $outDir
 
 echo $(date +"[%b %d %H:%M:%S] Done!")

@@ -15,25 +15,20 @@
 
 # Job name and output
 #SBATCH -J tsd_prep
-#SBATCH -o /scratch/Users/%u/data/slurmOut/slurm-%j.out
-#SBATCH -e /scratch/Users/%u/data/slurmErr/slurm-%j.err
+#SBATCH -o /Users/%u/data/slurmOut/slurm-%j.out
+#SBATCH -e /Users/%u/data/slurmErr/slurm-%j.err
 
-# Load modules
-module load bedtools
-module load bcftools
+pwd; hostname; date
 
-
-# variable list
-VCF=/scratch/Users/olde5615/data/scale_up/bams_withID/repeatmasker_dir/genotypes_repmasked_filtered.vcf # filtered vcf with repeatmasker
-REF=/Shares/CL_Shared/db/genomes/hg38/fa/hg38.main.fa # ref genome
+# Set variables
+VCF="/TE_pangenome/GraffiTE/outputs/filtered_pangenome/pangenome3TE_TSDfilt.vcf"
+REF="/TE_pangenome/GraffiTE/data/hg38.main.fa"
 WIN=30 # windows size in flanking to search TSD - 30 is the GraffiTE default
-MSK=/scratch/Users/olde5615/data/scale_up/bams_withID/repeatmasker_dir/indels.fa.masked # masked SVs from repeatmasker
-OUT_VCF=/scratch/Users/olde5615/data/scale_up/bams_withID/TSD_output/pangenie.vcf
-OUT_DIR=/scratch/Users/olde5615/data/scale_up/bams_withID/TSD_output
+MSK="/TE_pangenome/GraffiTE/outputs/repeatmasker/indels.fa.masked" # masked SVs from repeatmasker
+OUT_DIR="/TE_pangenome/GraffiTE/outputs/filtered_pangenome/TSD"
+OUT_VCF="$OUT_DIR/pangenome3TE_TSDfilt_prep.vcf"
 
-###################################################
 # Step 1: extract flanking of each retained TE SV #
-###################################################
 echo "extracting flanking..."
 
 mkdir -p ${OUT_DIR}
@@ -62,9 +57,7 @@ bedtools getfasta -fi ${REF} -bed ${OUT_DIR}/oneHit_SV_coordinates_win.bed -name
 echo $(date +"[%b %d %H:%M:%S] Done flanking")
 
 
-##################################################
 # Step 2: extract 5' and 3' of each masked TE SV #
-##################################################
 echo "extracting SVs' 5' and 3' ends..."
 
 # filter the indels.fa.masked to keep only single RM hits (1 TE per SV)

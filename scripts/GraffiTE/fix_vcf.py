@@ -1,4 +1,5 @@
 #!/bin/python
+# The script doesn't like gzipped files
 
 import vcfpy
 import pysam

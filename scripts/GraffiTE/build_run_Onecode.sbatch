@@ -1,28 +1,30 @@
 #!/bin/bash
 
-## Script for builing onecode LTR library
+## Script for building and running Onecode LTR library
 ##
 ## Example usage:
 ## sbatch buildOnecode.sbatch
 
 ## General settings
-#SBATCH -p short
+#SBATCH -p long
 #SBATCH -N 1
 #SBATCH -c 8
 #SBATCH --time=24:00:00
 #SBATCH --mem=128GB
 
 # Job name and output
-#SBATCH -J buildOnecode
-#SBATCH -o /scratch/Users/%u/data/slurmOut/slurm-%j.out
-#SBATCH -e /scratch/Users/%u/data/slurmErr/slurm-%j.err
+#SBATCH -J build_run_Onecode
+#SBATCH -o /Users/%u/data/slurmOut/slurm-%j.out
+#SBATCH -e /Users/%u/data/slurmErr/slurm-%j.err
 
+pwd; hostname; date
 
-FASTA_FILE=/scratch/Users/olde5615/data/scale_up/bams_withID/repeatmasker_dir/indels.fa
-REPMASK_DIR=/scratch/Users/olde5615/data/scale_up/bams_withID/repeatmasker_dir
+# Set variables
+REPMASK_DIR="/TE_pangenome/GraffiTE/outputs/repeatmasker"
+FASTA_FILE="$REPMASK_DIR/indels.fa"
 REPMASK_OUT=${REPMASK_DIR}/$(basename ${FASTA_FILE}).out
 
-### Step 1 make the dictionary file if LTRs are split between _LTR and _I
+# Make the dictionary file if LTRs are split between _LTR and _I
 echo "Building onecode LTR dictionary..."
 build_dictionary.pl --rm ${REPMASK_OUT} --unknown > ${REPMASK_DIR}/OneCode_LTR.dic
 

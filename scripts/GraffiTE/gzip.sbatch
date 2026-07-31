@@ -1,7 +1,8 @@
 #!/bin/bash
 
+## Script for compressing HGSVC3 fastq SRA files into gzip format
 ## Example usage:
-## sbatch --array=0-40 gzip.sbatch
+## sbatch gzip.sbatch
 
 # General settings
 #SBATCH -p long
@@ -9,13 +10,17 @@
 #SBATCH -c 8
 #SBATCH --time=72:00:00
 #SBATCH --mem=10GB
+#SBATCH --array=0-147
 
 # Job name and output
 #SBATCH -J gzip_fastq
-#SBATCH -o /scratch/Users/%u/data/slurmOut/slurm-%A_%a.out
-#SBATCH -e /scratch/Users/%u/data/slurmErr/slurm-%A_%a.err
+#SBATCH -o /Users/%u/data/slurmOut/slurm-%A_%a.out
+#SBATCH -e /Users/%u/data/slurmErr/slurm-%A_%a.err
 
-inDir="/scratch/Users/olde5615/data/scale_up"
+pwd; hostname; date
+
+#set variables
+inDir="/TE_pangenome/GraffiTE/outputs/fastqs"
 
 #set query files
 queries=($(ls $inDir/*.fastq | xargs -n 1 basename))

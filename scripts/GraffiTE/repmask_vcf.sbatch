@@ -1,9 +1,9 @@
 #!/bin/bash
 
 ## Script for Repeat Masking a VCF file
-##
-## Example usage for vcf containing 5 individuals increase time for bigger population:
-## inFile=genotypes.vcf outFile=genotypes_repmasked.vcf.gz sbatch repmask_vcf.sbatch
+## Note: Download latest version - this script uses RepeatMasker v4.1.0
+## Example usage for vcf containing 21 individuals:
+## sbatch repmask_vcf.sbatch
 
 ## General settings
 #SBATCH -p long
@@ -14,12 +14,17 @@
 
 # Job name and output
 #SBATCH -J repmask_vcf
-#SBATCH -o /scratch/Users/%u/data/slurmOut/slurm-%j.out
-#SBATCH -e /scratch/Users/%u/data/slurmErr/slurm-%j.err
+#SBATCH -o /Users/%u/data/slurmOut/slurm-%j.out
+#SBATCH -e /Users/%u/data/slurmErr/slurm-%j.err
 
-#load modules
-module load bcftools
-module load samtools
+pwd; hostname; date
+
+# Set variables
+inFile="/TE_pangenome/GraffiTE/outputs/sniffles_popn/sniffles2_variants.vcf" 
+outDir="/TE_pangenome/GraffiTE/outputs/repeatmasker"
+
+# Make outDir, if it doesn't exist
+mkdir -p $outDir
 
 # find all insertions and deletions and put into indels.fa
 FASTA_FILE=indels.fa
@@ -32,18 +37,14 @@ if grep ">" indels.fa | awk 'length > 50' | grep -q .; then
     exit 1
 fi
 
-mkdir repeatmasker_dir
-REPMASK_DIR=repeatmasker_dir
-
-
 # run RepeatMasker
 echo "processing repeats"
 
-RepeatMasker -nolow -lib /Shares/CL_Shared/db/repbase25.09/Libraries/RMRBSeqs.fasta -s -dir ${REPMASK_DIR} -pa 16 ${FASTA_FILE}
+RepeatMasker -nolow -s -species human -dir $outDir -pa 16 ${FASTA_FILE}
 
 echo "RepeatMasker Done!"
 
 
-REPMASK_OUT=${REPMASK_DIR}/$(basename ${FASTA_FILE}).out
+REPMASK_OUT=$outDir/$(basename ${FASTA_FILE}).out
 
 echo $(date +"[%b %d %H:%M:%S] Done!")

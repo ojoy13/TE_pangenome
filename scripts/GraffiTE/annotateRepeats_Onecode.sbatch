@@ -4,36 +4,32 @@
 ##
 ##
 ## Example usage:
-## sbatch annotateRepeats.sbatch
+## sbatch annotateRepeats_Onecode.sbatch
 
 ## General settings
-#SBATCH -p short
+#SBATCH -p long
 #SBATCH -N 1
 #SBATCH -c 8
 #SBATCH --time=24:00:00
 #SBATCH --mem=128GB
 
 # Job name and output
-#SBATCH -J annotateRepeats
-#SBATCH -o /scratch/Users/%u/data/slurmOut/slurm-%j.out
-#SBATCH -e /scratch/Users/%u/data/slurmErr/slurm-%j.err
+#SBATCH -J annotateRepeats_Onecode
+#SBATCH -o /Users/%u/data/slurmOut/slurm-%j.out
+#SBATCH -e /Users/%u/data/slurmErr/slurm-%j.err
 
-# Load modules
-module load samtools/1.8
-module load bedtools
-module load bcftools
+pwd; hostname; date
 
-FASTA_FILE=/scratch/Users/olde5615/data/scale_up/bams_withID/repeatmasker_dir/indels.fa
-REPMASK_DIR=/scratch/Users/olde5615/data/scale_up/bams_withID/repeatmasker_dir
-REPMASK_OUT=${REPMASK_DIR}/$(basename ${FASTA_FILE}).out
-REPMASK_ONECODE_OUT=${REPMASK_DIR}/$(basename ${FASTA_FILE}).onecode.out
-VCF=/scratch/Users/olde5615/data/scale_up/bams_withID/sniffles2_variants.vcf
+# Set variables
+REPMASK_DIR="/TE_pangenome/GraffiTE/outputs/repeatmasker"
+FASTA_FILE="$REPMASK_DIR/indels.fa"
+REPMASK_OUT="${REPMASK_DIR}/$(basename ${FASTA_FILE}).out"
+REPMASK_ONECODE_OUT="${REPMASK_DIR}/$(basename ${FASTA_FILE}).onecode.out"
+VCF="/TE_pangenome/GraffiTE/outputs/sniffles_popn/sniffles2_variants.vcf"
 
-#part 4 annotation vcf
 #create empty file
-ANNOT_FILE=${REPMASK_DIR}/vcf_annotation
-
 # vcf_annotation_1 is a temporary created from annotate_vcf.R
+ANNOT_FILE="${REPMASK_DIR}/vcf_annotation"
 
 # calculate the total span of TEs on the SV without overlap
 echo $(date +"[%b %d %H:%M:%S] Starting...")

@@ -1,9 +1,9 @@
 #!/bin/bash
 
-## Script for aligning long-read WGS bams
+## Script for aligning long-read WGS fastq.gz files from HGSVC3
 ##
 ## Example usage:
-## inDir=. outDir=. sbatch --array 0-147 minimapAlign.sbatch
+##  sbatch minimapAlign.sbatch
 
 ## General settings
 #SBATCH -p long
@@ -11,27 +11,32 @@
 #SBATCH -c 16
 #SBATCH --time=96:00:00
 #SBATCH --mem=240GB
+#SBATCH --array 0-147 
 
 # Job name and output
 #SBATCH -J minimapAlign
-#SBATCH -o /scratch/Users/%u/data/slurmOut/slurm-%A_%a.out
-#SBATCH -e /scratch/Users/%u/data/slurmErr/slurm-%A_%a.err
+#SBATCH -o /Users/%u/data/slurmOut/slurm-%A_%a.out
+#SBATCH -e /Users/%u/data/slurmErr/slurm-%A_%a.err
 
-#load modules
-module load samtools
-module load minimap2
+pwd; hostname; date
 
 #set query files
 queries=($(ls $inDir/*.fastq.gz | xargs -n 1 basename))
 
-# run the thing
-pwd; hostname; date
+# set variables
+inDir="/TE_pangenome/GraffiTE/outputs/fastqs"
+outDir="/TE_pangenome/GraffiTE/outputs/bams_bySRA"
+ref="/TE_pangenome/GraffiTE/data/hg38.main.fa"
 
+# Make outDir, if it doesn't exist
+mkdir -p $outDir
+
+# run Minimap2 align
 echo "Processing file: "${queries[$SLURM_ARRAY_TASK_ID]}
 echo $(date +"[%b %d %H:%M:%S] Aligning reads and sorting file...")
 
 #start
-minimap2 -t 16 -ax map-ont /Shares/CL_Shared/db/genomes/hg38/fa/hg38.main.fa $inDir/${queries[$SLURM_ARRAY_TASK_ID]} \
+minimap2 -t 16 -ax map-ont $ref $inDir/${queries[$SLURM_ARRAY_TASK_ID]} \
 | samtools sort - -@16 -o $inDir/${queries[$SLURM_ARRAY_TASK_ID]%.fastq.gz}.sorted.bam
 
 echo $(date +"[%b %d %H:%M:%S] Indexing bam file...")

@@ -1,7 +1,7 @@
 #!/bin/bash
 
 ## Example usage:
-## outDir=. sraFile=sra.txt sbatch --array 0-0 sra_download_bulk_OJ.sbatch
+## sbatch --array 0-43 sra_download_bulk.sbatch
 
 # General settings
 #SBATCH -p short
@@ -12,8 +12,14 @@
 
 # Job name and output
 #SBATCH -J sraDownloadBulk
-#SBATCH -o /scratch/Users/%u/data/slurmOut/slurm-%A_%a.out
-#SBATCH -e /scratch/Users/%u/data/slurmErr/slurm-%A_%a.err
+#SBATCH -o /Users/%u/data/slurmOut/slurm-%j.out
+#SBATCH -e /Users/%u/data/slurmErr/slurm-%j.err
+
+pwd; hostname; date
+
+# Set variables
+outDir=. 
+sraFile=sra.txt 
 
 # set query files
 queries=($(cat $sraFile | grep -v "#" | awk '{print $1}'))
@@ -28,7 +34,7 @@ echo $(date +"[%b %d %H:%M:%S] Downloading sra...")
 # since the newest version (sra3.0.0) is in my ~/.bash_profile PATH
 
 fasterq-dump -e 8 -O $outDir -v -v \
--t /scratch/Users/olde5615/data/fasterq-dump-temp \
+-t /scratch/Users/ativ2716/data/fasterq-dump-temp \
 ${queries[$SLURM_ARRAY_TASK_ID]}
 
 echo $(date +"[%b %d %H:%M:%S] Done!")

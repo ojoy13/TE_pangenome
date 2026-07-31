@@ -4,31 +4,31 @@
 ##
 ##
 ## Example usage:
-## sbatch filterRepeats.sbatch
+## sbatch filterRepeats_Onecode.sbatch
 
 ## General settings
-#SBATCH -p short
+#SBATCH -p long
 #SBATCH -N 1
 #SBATCH -c 8
 #SBATCH --time=24:00:00
 #SBATCH --mem=128GB
 
 # Job name and output
-#SBATCH -J filterRepeats.sbatch
-#SBATCH -o /scratch/Users/%u/data/slurmOut/slurm-%j.out
-#SBATCH -e /scratch/Users/%u/data/slurmErr/slurm-%j.err
+#SBATCH -J filterRepeats_Onecode
+#SBATCH -o /Users/%u/data/slurmOut/slurm-%j.out
+#SBATCH -e /Users/%u/data/slurmErr/slurm-%j.err
 
+pwd; hostname; date
 
-FASTA_FILE=/scratch/Users/olde5615/data/scale_up/bams_withID/repeatmasker_dir/indels.fa
-REPMASK_DIR=/scratch/Users/olde5615/data/scale_up/bams_withID/repeatmasker_dir
-REPMASK_OUT=${REPMASK_DIR}/$(basename ${FASTA_FILE}).out
+# Set variables
+REPMASK_DIR="/TE_pangenome/GraffiTE/outputs/repeatmasker"
+FASTA_FILE="$REPMASK_DIR/indels.fa"
+REPMASK_OUT="${REPMASK_DIR}/$(basename ${FASTA_FILE}).out"
 
 REPMASK_ONECODE_OUT=${REPMASK_DIR}/$(basename ${FASTA_FILE}).onecode.out
 
-echo $(date +"[%b %d %H:%M:%S] Filtering onecode repeats started!")
+echo $(date +"[%b %d %H:%M:%S] Filtering onecode repeats started...")
 
-
-### Step 3 parse the output
 # remove output if previous run
 echo "Concatenate outputs..."
 rm ${REPMASK_DIR}/ALL.elem_sorted.csv 2>/dev/null

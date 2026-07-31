@@ -39,8 +39,8 @@ read_rm_custom <- function(file) {
 }
 
 # Define paths
-VCF <-  "/scratch/Users/olde5615/data/scale_up/bams_withID/sniffles2_variants.vcf"            # Path to your VCF file
-REPMASK_ONECODE_OUT <- "/scratch/Users/olde5615/data/scale_up/bams_withID/repeatmasker_dirindels.fa.onecode.out"  # Path to RepeatMasker .out file
+VCF <-  "/TE_pangenome/GraffiTE/outputs/sniffles_popn/sniffles2_variants.vcf"            # Path to your VCF file
+REPMASK_ONECODE_OUT <- "/TE_pangenome/GraffiTE/outputs/repeatmasker/indels.fa.onecode.out"  # Path to RepeatMasker .out file
 ANNOT_FILE <- "vcf_annotation_1"    # Path to the output annotation file
 
 # Call the function to read the RepeatMasker file and assign to rm_tibble

@@ -5,7 +5,7 @@ library(dplyr)
 library(DESeq2)
 library(ggplot2)
 
-inDir <- "/scratch/Users/olde5615/data/graph21_RNA/featureCounts_transcripts/perSample/"
+inDir <- "/TE_pangenome/outputs/featureCounts/perSample/"
 
 # Get list of ALL featureCounts files
 files_list <- list.files(path = inDir, pattern = "\\.txt$", full.names = FALSE)
@@ -33,8 +33,8 @@ for (i in seq_along(files_list)) {
 counts_df <- purrr::reduce(df_list, full_join, by = "Geneid")
 
 # Format metadata
-meta <- read.csv("/scratch/Users/olde5615/data/pangenome21_phased/21_graphs_31MAY26/phased_vcf/21_sample_metadata.csv")
-sniffle <- read.csv("/scratch/Users/olde5615/data/pangenome21_phased/21_graphs_31MAY26/phased_vcf/deseq2_metadata.csv")
+meta <- read.csv("/TE_pangenome/data/TE_pangenome_construction/21_sample_metadata.csv")
+sniffle <- read.csv("/TE_pangenome/data/TE_pangenome_construction/deseq2_metadata.csv")
 
 # Filter for your favorite Sniffle (you can change this ID)
 onesniffle <- sniffle %>% filter(sniffles_id == "Sniffles2.INS.262M1D")
@@ -75,7 +75,7 @@ res <- results(DEdds)
 head(res)
 # Visualization: Before and after normalization
 # Raw counts
-outdir <- "/scratch/Users/olde5615/data/graph21_RNA/featureCounts_transcripts_gene_id/DESeq2_results/"
+outdir <- "/TE_pangenome/outputs/DESeq2/"
 
 # Make sure directory exists
 dir.create(outdir, showWarnings = FALSE, recursive = TRUE)
@@ -176,7 +176,7 @@ plotMA(res)
 
 
 # Load GTF for gene annotations
-gtf <- "/Shares/CL_Shared/db/genomes/hg38/annotations/gencode.v38.ComprehensiveAnnotation.Main.gtf"
+gtf <- "//TE_pangenome/data/TE_pangenome_construction/gencode.v38.ComprehensiveAnnotation.Main.gtf"
 
 # Read the GTF file
 gtf_df <- read.table(gtf, 
@@ -296,34 +296,10 @@ ggsave(paste0(outdir, "RNA_main_transcripts_significance_distribution.pdf"),
        width = 8, height = 6)
 
 
-# re-run deseq2 without chrY
-# First, add chromosome info to gtf_transcripts
-gtf_transcripts$chr <- gtf_df$seqname[match(rownames(gtf_transcripts), rownames(gtf_df))]
-
-# Get unique Y-chromosome genes
-chrY_genes <- unique(gtf_transcripts$gene_name[gtf_transcripts$chr == "chrY" & 
-                                                 !is.na(gtf_transcripts$gene_name)])
-length(chrY_genes)
-
-# Combine with your results-based list
-y_genes_from_results <- c("UTY", "TXLNGY", "KDM5D", "USP9Y", "DDX3Y", "TTTY10")
-y_genes <- c("UTY", "TXLNGY", "KDM5D", "USP9Y", "DDX3Y", "TTTY10", 
-             "RPS4Y1", "RPS4Y2", "EIF1AY", "ZFY", "CYorf15A", "CYorf15B",
-             "TMSB4Y", "NLGN4Y", "PCDH11Y", "TGIF2LY", "TSPY1", "TSPY2",
-             "TSPY3", "TSPY4", "TSPY8", "TSPY9P", "VCY", "XKRY", "HSFY1",
-             "HSFY2", "PRKY", "RBMY1A1", "RBMY1B", "RBMY1C", "RBMY1D", 
-             "RBMY1E", "RBMY1F", "RBMY1J", "BPY2", "CDY1", "CDY2", 
-             "DAZ1", "DAZ2", "DAZ3", "DAZ4")
-all_y_genes <- unique(c(y_genes, y_genes_from_results, chrY_genes))
-length(all_y_genes)
-
 # Now filter again
 res_filtered <- res_main[!res_main$gene_name %in% all_y_genes, ]
 res_filtered <- res_filtered[order(res_filtered$padj), ]
 
-# Step 6: View top results without Y genes
-cat("\n=== Top 20 Results After Removing Y-chromosome Genes ===\n")
-print(head(res_filtered[, c("gene_name", "log2FoldChange", "pvalue", "padj")], 20))
 
 # Step 7: Check for significant genes
 sig_filtered <- res_filtered[!is.na(res_filtered$padj) & res_filtered$padj < 0.05, ]
@@ -357,30 +333,7 @@ ggplot(res_filtered, aes(x = log2FoldChange, y = -log10(pvalue))) +
 
 ggsave(paste0(outdir, "RNA_volcano_plot_no_Y.pdf"), width = 8, height = 6)
 
-# Step 10: Create a bar plot of top 20 genes by p-value
-top20 <- head(res_filtered[!is.na(res_filtered$pvalue), ], 20)
-
-ggplot(top20, aes(x = reorder(gene_name, -log10(pvalue)), y = -log10(pvalue))) +
-  geom_bar(stat = "identity", fill = "steelblue", alpha = 0.7) +
-  coord_flip() +
-  labs(title = "Top 20 Genes by P-value (Y-chromosome Removed)",
-       x = "Gene Name",
-       y = "-log10(P-value)") +
-  theme_bw()
-
-ggsave(paste0(outdir, "RNA_top20_genes_no_Y.pdf"), width = 10, height = 8)
-
-
-
 gtf_transcripts
-
-one_gene<-"OVCH2"
-find_transcript_ids<-function(one_gene){
-  mini_gtf_df<-gtf_transcripts%>%filter(gene_name==one_gene)
-  mini_gtf_df$transcript_id
-}
-list_of_transcripts<-find_transcript_ids(one_gene)
-res_df_one_gene<-res_df%>%filter(transcript_id %in% list_of_transcripts )
 
 # making bed file
 gtf_transcripts_bed<-gtf_transcripts%>%filter(feature=="transcript") %>% select(seqname,start,end,transcript_id,score,strand)
@@ -404,7 +357,7 @@ res_df_minexp <- res_df %>%
   dplyr::filter(baseMean<100)
 
 
-min_people<-read.csv("/scratch/Users/olde5615/data/graph21_RNA/RNA_hg38/sniffleswithnomorethen14peopleinonegenotype.csv")
+min_people<-read.csv("/TE_pangenome/outputs/DESq2/sniffleswithnomorethen14peopleinonegenotype.csv")
 
 # filter for sniffles near expressed genes and sniffles that vary between people with groups of no more than 14
 nearbygenes_filter<-nearbygenes%>%filter(name %in% res_df_minexp$transcript_id)
@@ -420,7 +373,7 @@ n_distinct(nearbygenes_filter$ID)
 n_distinct(nearbygenes_filter_min_people$name)
 n_distinct(nearbygenes_filter_min_people$ID)
 
-write.csv(nearbygenes_filter_min_people,"candidate_sniffles.csv")
+write.csv(nearbygenes_filter_min_people, "candidate_sniffles.csv")
 
 
 

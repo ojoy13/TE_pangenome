@@ -12,23 +12,19 @@ a_sniffle = args[1]
 #a_sniffle="Sniffles2.INS.23MF3"
 print(a_sniffle)
 
-inDir <- "/scratch/Users/olde5615/data/graph21_RNA/featureCounts_transcripts_gene_id/perSample"
-outdir<- "/scratch/Users/olde5615/data/graph21_RNA/featureCounts_transcripts_gene_id/DESeq2_results_a_sniffle/"
+inDir <- "/TE_pangenome/outputs/featureCounts/perSample/"
+inDir <- "/TE_pangenome/outputs/DESeq2/DE_outputs/"
 if (!dir.exists(outdir)) {
   dir.create(outdir)
   cat("Created directory:", outdir, "\n")
 }
 
-# Combine all samples into one count matrix
-counts_df <- read.csv("/scratch/Users/olde5615/data/pangenome21_phased/21_graphs_31MAY26/phased_vcf/RNAseq_counts_allpeople_linear_genes.csv",row.names=1)
-# remove NA19320 - not in graph genome
-#counts_df <- counts_df %>% select(-NA19320.merged.bam)
+nearbygenes <- read.table("/TE_pangenome/outputs/DESEq2/gtf_genes_bedwin_10kb.bed",sep="\t",header=FALSE, stringsAsFactors=FALSE)
 
-nearbygenes <- read.table("/scratch/Users/olde5615/data/graph21_RNA/featureCounts_transcripts_gene_id/gtf_genes_bedwin_10kb.bed",sep="\t",header=FALSE, stringsAsFactors=FALSE)
 # Define VCF header columns (first 9 columns)
 vcf_cols <- c('CHROM', 'POS', 'ID', 'REF', 'ALT', 'QUAL', 'FILTER', 'INFO', 'FORMAT')
 
-# Define sample columns (excluding NA19320)
+# Define sample columns
 sample_cols <- c('HG00268.merged.bam', 'HG00358.merged.bam', 'HG01352.merged.bam', 
                  'HG01890.merged.bam', 'HG02059.merged.bam', 'HG02106.merged.bam', 
                  'HG02282.merged.bam', 'HG02769.merged.bam', 'HG02818.merged.bam', 
@@ -47,7 +43,7 @@ print(ncol(nearbygenes))
 names(nearbygenes) <- all_cols
 
 # Format metadata
-meta <- read.csv("/scratch/Users/olde5615/data/pangenome21_phased/21_graphs_31MAY26/phased_vcf/21_sample_metadata.csv")
+meta <- read.csv("/TE_pangenome/data/TE_pangenome_construction/sample_metadata.tsv")
 
 # Filter for your favorite Sniffle (you can change this ID)
 onesniffle <- nearbygenes %>% filter(ID==a_sniffle) %>% select(all_of(c(sample_cols))) %>% distinct()
@@ -74,7 +70,7 @@ print(table(meta2$TE_group))
 
 # Filter metadata to only samples that exist in counts
 # After reading counts_df
-counts_df <- read.csv("/scratch/Users/olde5615/data/pangenome21_phased/21_graphs_31MAY26/phased_vcf/RNAseq_counts_allpeople_linear_genes.csv", row.names=1)
+counts_df <- read.csv("/TE_pangenome/outputs/DESEq2/RNAseq_counts_allpeople_linear_genes.csv", row.names=1)
 
 # Remove .uniq suffix from column names to match metadata
 colnames(counts_df) <- gsub("\\.uniq$", "", colnames(counts_df))

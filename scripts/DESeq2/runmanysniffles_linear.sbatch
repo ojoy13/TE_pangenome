@@ -1,20 +1,21 @@
 #!/bin/bash
+## Requires: Rv4.4.0
+
 #SBATCH --job-name=snif_transcript
-#SBATCH --mail-type=ALL
-#SBATCH --mail-user=olivia.joyner@fiji.colorado.edu
 #SBATCH --nodes=1
 #SBATCH --ntasks=2
 #SBATCH --time=01:00:00
 #SBATCH --partition=short
 #SBATCH --mem=3GB
-#SBATCH -o /scratch/Users/%u/data/slurmOut/slurm-%A_%a.out
-#SBATCH -e /scratch/Users/%u/data/slurmErr/slurm-%A_%a.err
-#SBATCH --array=1-3800%50   # <-- TEMP: will override on command line
 
-module load R/4.4.0
+#SBATCH -o /Users/%u/data/slurmOut/slurm-%j.out
+#SBATCH -e /Users/%u/data/slurmErr/slurm-%j.err
+#SBATCH --array=1-3600%32   # <-- TEMP: will override on command line
 
-rscript_path=/scratch/Users/olde5615/data/pangenome21_phased/21_graphs_31MAY26/phased_vcf/deseq_1sniffle_forlooping.R
-csv_file=/scratch/Users/olde5615/data/graph21_RNA/featureCounts_transcripts_gene_id/just_candidate_sniffles_linear_genes.csv
+pwd; hostname; date
+
+rscript_path=/TE_pangenome/scripts/DESEq2/deseq_1sniffle_forlooping.R
+csv_file=/TE_pangenome/outputs/DESEq2/just_candidate_sniffles.csv
 
 printf "\nR code being run: %s" "${rscript_path}"
 printf "\nRun on: %s" "$(hostname)"

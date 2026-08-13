@@ -5,7 +5,7 @@ library(dplyr)
 library(DESeq2)
 library(ggplot2)
 
-inDir <- "/scratch/Users/olde5615/data/graph21_RNA/featureCounts_transcripts/perSample/"
+inDir <- "/TE_pangenome/outputs/featureCounts/perSample/"
 
 # Get list of ALL featureCounts files
 files_list <- list.files(path = inDir, pattern = "\\.txt$", full.names = FALSE)

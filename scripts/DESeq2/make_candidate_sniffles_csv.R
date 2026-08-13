@@ -5,7 +5,8 @@ library(dplyr)
 library(DESeq2)
 library(ggplot2)
 
-inDir <- "/scratch/Users/olde5615/data/graph21_RNA/featureCounts_transcripts_gene_id/perSample/"
+inDir <- "/TE_pangenome/outputs/featureCounts/perSample/"
+outdir <- "/TE_pangenome/outputs/DESeq2/"
 
 # Get list of ALL featureCounts files
 files_list <- list.files(path = inDir, pattern = "\\.txt$", full.names = FALSE)
@@ -39,4 +40,4 @@ head(sample_name)
 # Combine all samples into one count matrix
 counts_df <- purrr::reduce(df_list, full_join, by = "Geneid")
 head(counts_df,n=5)
-write.csv(counts_df, "RNAseq_counts_allpeople_linear_genes.csv", row.names = FALSE)
+write.csv(counts_df, outdir, "RNAseq_counts_allpeople_linear_genes.csv", row.names = FALSE)
